@@ -42,11 +42,11 @@ Context and resources:
 - Limited hardware: 2 CPUs, 8 GB RAM — keep simulations lightweight
 """
 
-# Clean start
-try:
-    client.delete_project(project_name)
-except Exception:
-    pass
+# # Clean start
+# try:
+#     client.delete_project(project_name)
+# except Exception:
+#     pass
 
 print(f"Data description:\n{data_description.strip()}\n")
 print(f"Creating project: {project_name}\n")
@@ -81,9 +81,21 @@ print(f"\n{meth}\n")
 print("=" * 60)
 print("[4/4] Generating results (code runs locally) ...")
 print("=" * 60)
+# Examples of available models:
+#   gemini-3.1-flash-lite-preview, gemini-3.1-pro-preview,
+#   gpt-5-nano, gpt-5.2, claude-sonnet-4-6
+output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_pipeline_oscillator")
 res = project.results(
-    max_attempts=5,
-    max_steps=2,
+    max_steps=2,                                    # number of plan steps
+    max_attempts=5,                                 # retries per step on failure
+    n_plan_reviews=1,                               # plan review rounds
+    engineer_model="gemini-3.1-flash-lite-preview", # LLM for engineer
+    researcher_model="gemini-3.1-flash-lite-preview",# LLM for researcher
+    # planner_model="gemini-3.1-flash-lite-preview",  # LLM for planner
+    # plan_reviewer_model="gemini-3.1-pro-preview",   # LLM for plan reviewer
+    # default_model="gemini-3.1-flash-lite-preview",  # default for all agents
+    # formatter_model="gemini-3.1-flash-lite-preview", # LLM for formatters
+    work_dir=output_dir,                            # local execution directory
 )
 print(f"\nResults: {len(res)} chars")
 

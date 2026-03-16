@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 """Review a paper PDF with the Skepthical engine.
 
-This downloads a paper from arXiv, then runs a standalone Skepthical
-review on it. The review report is saved locally as both markdown and
-PDF files.
+Two examples:
+  - Review a paper downloaded from arXiv
+  - Review a local PDF file
 
-Alternatively, you can point directly at a PDF already on the server
-(see the commented-out section below).
+The review report is saved locally as both markdown and PDF files.
 """
 
 import os
-import sys
-
 import air
 
 client = air.AIR(
@@ -19,27 +16,17 @@ client = air.AIR(
     base_url=os.environ.get("AIR_BASE_URL", "http://localhost:8000"),
 )
 
-# ── 1. Get a paper PDF on the server ───────────────────────────────
-#
-# Option A: point to a PDF that already exists on the server.
-# pdf_path = "/path/on/server/to/paper.pdf"
-#
-# Option B: download from arXiv (used by default below).
-
-arxiv_url = "https://arxiv.org/abs/1105.3470"
-print(f"Downloading paper from {arxiv_url} ...")
-
+# --- Option A: review a paper from arXiv ---
+arxiv_url = "https://arxiv.org/abs/1706.03762"  # "Attention Is All You Need"
+print(f"Downloading {arxiv_url} ...")
 arxiv_result = client.arxiv(arxiv_url)
-downloaded = arxiv_result.get("downloaded_files", [])
-if not downloaded:
-    client.close()
-    sys.exit("No PDF was downloaded — check the arXiv URL.")
+pdf_path = arxiv_result["downloaded_files"][0]
 
-pdf_path = downloaded[0]
-print(f"PDF on server: {pdf_path}\n")
+# --- Option B: review a local PDF ---
+# pdf_path = "localpaper.pdf"
 
-# ── 2. Run a Skepthical review ─────────────────────────────────────
-#
+print(f"Paper: {pdf_path}")
+
 # Options:
 #   thoroughness       — "Standard" (single reviewer) or "High" (two merged)
 #   figures_review     — detailed figure/diagram analysis
@@ -48,11 +35,10 @@ print(f"PDF on server: {pdf_path}\n")
 #   review_numerics    — audit numerical computations
 #   emails             — send the finished report to these addresses
 #   timeout            — max seconds to wait (default 3600)
-#   poll_interval      — seconds between status polls (default 5)
 
 output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_review")
 
-print("Running Skepthical review (this may take a few minutes) ...")
+print("\nRunning Skepthical review (this may take a few minutes) ...")
 
 review_result = client.review(
     pdf_path,
@@ -62,8 +48,8 @@ review_result = client.review(
     verify_statements=False,
     review_maths=False,
     review_numerics=False,
-    timeout=600,
-    poll_interval=5.0,
+    # emails=["you@example.com"],  # optional: receive the report by email
+    timeout=3600,
 )
 
 print(f"\n{'='*60}")

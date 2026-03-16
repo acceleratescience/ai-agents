@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "ai-research>=0.1.30",
+    "ai-research>=0.1.36",
     "ipykernel>=7.2.0",
     "kagglehub>=1.0.0",
     "matplotlib>=3.10.8",
