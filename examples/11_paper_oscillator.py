@@ -13,7 +13,7 @@ client = air.AIR(
     api_key=os.environ["AIR_API_KEY"],
     base_url=os.environ.get("AIR_BASE_URL", "http://localhost:8000"),
     # local_dir: where project files are pulled to locally after each step.
-    local_dir=os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_paper_oscillator"),
+    local_dir=os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_pipeline_oscillator"),
 )
 
 project_name = "harmonic-oscillator"

@@ -17,3 +17,4 @@ wheels/
 
 # Planning folder
 content/
+.DS_Store
